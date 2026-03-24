@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>工作导航</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:         #f5f6f8;
+      --white:      #ffffff;
+      --border:     #e8eaed;
+      --border-2:   #d1d5db;
+      --text:       #111827;
+      --text-2:     #374151;
+      --text-3:     #6b7280;
+      --text-4:     #9ca3af;
+      --blue:       #2563eb;
+      --blue-light: #eff6ff;
+      --blue-mid:   #dbeafe;
+      --shadow-sm:  0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-md:  0 4px 12px rgba(0,0,0,.07), 0 2px 4px rgba(0,0,0,.04);
+      --shadow-lg:  0 10px 24px rgba(0,0,0,.09), 0 4px 8px rgba(0,0,0,.05);
+      --radius:     10px;
+      --sidebar-w:  220px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    a, button { -webkit-tap-highlight-color: transparent; }
+    html { font-size: 14px; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', 'Noto Sans SC', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── TOP BAR ─────────────────────────────────── */
+    .topbar {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 28px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-mark {
+      width: 30px; height: 30px;
+      background: var(--blue);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo-mark svg { width: 16px; height: 16px; fill: #fff; }
+    .logo-text {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text);
+      letter-spacing: -.3px;
+    }
+    .logo-text span { color: var(--blue); }
+
+    .topbar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    #clock {
+      font-size: .78rem;
+      color: var(--text-3);
+      letter-spacing: .2px;
+      font-weight: 400;
+    }
+
+    .search-wrap {
+      position: relative;
+    }
+    #search {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: .82rem;
+      padding: 6px 12px 6px 34px;
+      width: 200px;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s, width .3s;
+    }
+    #search::placeholder { color: var(--text-4); }
+    #search:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+      width: 260px;
+      background: var(--white);
+    }
+    .search-icon {
+      position: absolute;
+      left: 10px; top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--text-4);
+    }
+    .search-icon svg { width: 14px; height: 14px; }
+
+    /* ── LAYOUT ──────────────────────────────────── */
+    .layout {
+      display: flex;
+      flex: 1;
+    }
+
+    /* ── SIDEBAR ─────────────────────────────────── */
+    .sidebar {
+      width: var(--sidebar-w);
+      flex-shrink: 0;
+      background: var(--white);
+      border-right: 1px solid var(--border);
+      padding: 20px 12px;
+      position: sticky;
+      top: 56px;
+      height: calc(100vh - 56px);
+      overflow-y: auto;
+    }
+
+    .sidebar-title {
+      font-size: .65rem;
+      font-weight: 600;
+      color: var(--text-4);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 0 8px;
+      margin-bottom: 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all .15s;
+      margin-bottom: 2px;
+      user-select: none;
+    }
+    .nav-item-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nav-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .nav-label {
+      font-size: .83rem;
+      color: var(--text-2);
+      font-weight: 400;
+    }
+    .nav-count {
+      font-size: .68rem;
+      color: var(--text-4);
+      background: var(--bg);
+      padding: 1px 6px;
+      border-radius: 10px;
+      font-weight: 500;
+    }
+
+    .nav-item:hover {
+      background: var(--bg);
+    }
+    .nav-item.active {
+      background: var(--blue-light);
+    }
+    .nav-item.active .nav-label { color: var(--blue); font-weight: 600; }
+    .nav-item.active .nav-count {
+      background: var(--blue-mid);
+      color: var(--blue);
+    }
+
+    .sidebar-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 12px 8px;
+    }
+
+    /* category colors */
+    .cat-0 { background: #6366f1; }
+    .cat-1 { background: #0ea5e9; }
+    .cat-2 { background: #f59e0b; }
+    .cat-3 { background: #ef4444; }
+    .cat-4 { background: #10b981; }
+    .cat-5 { background: #8b5cf6; }
+    .cat-6 { background: #ec4899; }
+    .cat-all { background: #6b7280; }
+
+    /* ── MAIN ────────────────────────────────────── */
+    .main {
+      flex: 1;
+      padding: 28px 32px 60px;
+      overflow-y: auto;
+      min-width: 0;
+    }
+
+    /* ── PAGE HEADER ─────────────────────────────── */
+    .page-header {
+      margin-bottom: 28px;
+    }
+    .page-header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -.4px;
+    }
+    .page-header p {
+      font-size: .82rem;
+      color: var(--text-3);
+      margin-top: 4px;
+    }
+
+    /* ── SECTION ─────────────────────────────────── */
+    .section {
+      margin-bottom: 36px;
+      animation: fadeUp .35s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .section:nth-child(1) { animation-delay: .04s }
+    .section:nth-child(2) { animation-delay: .08s }
+    .section:nth-child(3) { animation-delay: .12s }
+    .section:nth-child(4) { animation-delay: .16s }
+    .section:nth-child(5) { animation-delay: .20s }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .section-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px 3px 8px;
+      border-radius: 20px;
+      font-size: .72rem;
+      font-weight: 600;
+    }
+    .section-badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+    }
+    .section-count {
+      font-size: .72rem;
+      color: var(--text-4);
+      font-weight: 400;
+    }
+
+    /* badge color themes */
+    .badge-0 { background:#eef2ff; color:#4f46e5; }
+    .badge-0 .section-badge-dot { background:#6366f1; }
+    .badge-1 { background:#f0f9ff; color:#0284c7; }
+    .badge-1 .section-badge-dot { background:#0ea5e9; }
+    .badge-2 { background:#fffbeb; color:#b45309; }
+    .badge-2 .section-badge-dot { background:#f59e0b; }
+    .badge-3 { background:#fef2f2; color:#b91c1c; }
+    .badge-3 .section-badge-dot { background:#ef4444; }
+    .badge-4 { background:#f0fdf4; color:#15803d; }
+    .badge-4 .section-badge-dot { background:#10b981; }
+    .badge-5 { background:#f5f3ff; color:#7c3aed; }
+    .badge-5 .section-badge-dot { background:#8b5cf6; }
+    .badge-6 { background:#fdf2f8; color:#db2777; }
+    .badge-6 .section-badge-dot { background:#ec4899; }
+
+    /* ── CARDS GRID ──────────────────────────────── */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+      gap: 12px;
+    }
+
+    /* ── CARD ────────────────────────────────────── */
+    .card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: relative;
+      transition: border-color .12s ease, box-shadow .12s ease, transform .12s ease;
+      will-change: transform;
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0; bottom: 0;
+      width: 3px;
+      opacity: 0;
+      transition: opacity .2s;
+    }
+    .card:hover {
+      border-color: var(--blue);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+    .card:hover::before { opacity: 1; background: var(--blue); }
+    .card:active {
+      transform: scale(.97) translateY(0) !important;
+      box-shadow: var(--shadow-sm) !important;
+      border-color: var(--blue) !important;
+      transition: transform .08s ease, box-shadow .08s ease !important;
+    }
+
+    .card-icon-wrap {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+    }
+    .card-icon-wrap svg {
+      width: 26px; height: 26px;
+    }
+    .card-icon-wrap img {
+      width: 26px; height: 26px;
+      object-fit: contain;
+      border-radius: 4px;
+    }
+    /* favicon 渐入 */
+    .card-icon-wrap img {
+      animation: iconFadeIn .25s ease;
+    }
+    @keyframes iconFadeIn {
+      from { opacity: 0; transform: scale(.85); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .card-icon-initial {
+      width: 26px; height: 26px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .78rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -.5px;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .card-info {
+      min-width: 0;
+      flex: 1;
+    }
+    .card-name {
+      font-weight: 600;
+      font-size: .88rem;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .card-domain {
+      font-size: .68rem;
+      color: var(--text-4);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+
+    .card-arrow {
+      flex-shrink: 0;
+      color: var(--text-4);
+      opacity: 0;
+      transition: opacity .15s, transform .15s;
+    }
+    .card:hover .card-arrow {
+      opacity: 1;
+      transform: translate(1px, -1px);
+    }
+    .card-arrow svg { width: 12px; height: 12px; }
+
+    /* delete button in edit mode */
+    .card-del {
+      display: none;
+      position: absolute;
+      top: 6px; right: 6px;
+      width: 18px; height: 18px;
+      background: #fee2e2;
+      border: none;
+      border-radius: 4px;
+      color: #ef4444;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      font-size: .6rem;
+      z-index: 2;
+      transition: background .15s;
+    }
+    .card-del:hover { background: #fecaca; }
+    body.edit-mode .card-del { display: flex; }
+    body.edit-mode .card:hover { transform: none; border-color: var(--border); }
+
+    /* ── NO RESULTS ──────────────────────────────── */
+    .no-results {
+      display: none;
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-4);
+    }
+    .no-results svg { width: 48px; height: 48px; margin-bottom: 12px; opacity: .3; }
+    .no-results p { font-size: .88rem; }
+    .no-results.show { display: flex; flex-direction: column; align-items: center; }
+
+    /* ── EDIT BTN ────────────────────────────────── */
+    .btn-edit {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-3);
+      font-family: inherit;
+      font-size: .78rem;
+      font-weight: 500;
+      padding: 5px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all .15s;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .btn-edit:hover { border-color: var(--border-2); color: var(--text-2); }
+    .btn-edit.active {
+      background: var(--blue-light);
+      border-color: var(--blue-mid);
+      color: var(--blue);
+    }
+    .btn-edit svg { width: 13px; height: 13px; }
+
+    /* add card */
+    .card-add {
+      background: transparent;
+      border: 1.5px dashed var(--border-2);
+      border-radius: var(--radius);
+      padding: 16px;
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: var(--text-4);
+      font-family: inherit;
+      font-size: .78rem;
+      min-height: 74px;
+      transition: all .15s;
+    }
+    .card-add:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-light); }
+    body.edit-mode .card-add { display: flex; }
+
+    /* ── MODAL ───────────────────────────────────── */
+    .modal-bg {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(17,24,39,.4);
+      backdrop-filter: blur(4px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-bg.open { display: flex; }
+
+    .modal {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px;
+      width: 400px;
+      max-width: 94vw;
+      box-shadow: var(--shadow-lg);
+      animation: modalIn .2s ease;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(.96) translateY(8px); }
+      to   { opacity: 1; transform: none; }
+    }
+    .modal h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+    .form-row { display: flex; flex-direction: column; gap: 5px; margin-bottom: 14px; }
+    .form-row label { font-size: .72rem; font-weight: 500; color: var(--text-3); }
+    .form-row input, .form-row select, .form-row textarea {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: .82rem;
+      padding: 8px 10px;
+      outline: none;
+      transition: border-color .15s, box-shadow .15s;
+    }
+    .form-row input:focus, .form-row select:focus, .form-row textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+      background: var(--white);
+    }
+    .form-row textarea { resize: vertical; min-height: 56px; }
+
+    .modal-btns { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+    .btn-cancel {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text-3);
+      font-family: inherit;
+      font-size: .82rem;
+      font-weight: 500;
+      padding: 7px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .btn-cancel:hover { border-color: var(--border-2); color: var(--text-2); }
+    .btn-save {
+      background: var(--blue);
+      border: 1px solid var(--blue);
+      color: #fff;
+      font-family: inherit;
+      font-size: .82rem;
+      font-weight: 600;
+      padding: 7px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .btn-save:hover { background: #1d4ed8; border-color: #1d4ed8; }
+
+    /* ── SCROLLBAR ───────────────────────────────── */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 3px; }
+
+    /* ── RESPONSIVE ──────────────────────────────── */
+    @media (max-width: 768px) {
+      .sidebar { display: none; }
+      .main { padding: 20px 16px 50px; }
+      #search { width: 160px; }
+      #search:focus { width: 200px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── TOP BAR ─────────────────────────────────────── -->
+<header class="topbar">
+  <div class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 16 16"><path d="M2 3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3zm0 5a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V8zm0 5a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"/></svg>
+    </div>
+    <span class="logo-text">工作<span>导航</span></span>
+  </div>
+  <div class="topbar-right">
+    <div id="clock">--:-- · ---</div>
+    <div class="search-wrap">
+      <span class="search-icon">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4.5"/><path d="M10.5 10.5l3 3"/></svg>
+      </span>
+      <input type="text" id="search" placeholder="搜索网站..." autocomplete="off" />
+    </div>
+    <button class="btn-edit" id="btn-edit">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11.5 2.5l2 2-8 8H3.5v-2l8-8z"/></svg>
+      编辑
+    </button>
+  </div>
+</header>
+
+<!-- ── LAYOUT ───────────────────────────────────────── -->
+<div class="layout">
+  <!-- sidebar -->
+  <aside class="sidebar" id="sidebar"></aside>
+  <!-- main -->
+  <main class="main" id="main">
+    <div class="page-header">
+      <h1>工作台导航</h1>
+      <p>集中管理常用工作平台，快速直达</p>
+    </div>
+    <div id="sections"></div>
+    <div class="no-results" id="no-results">
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="21" cy="21" r="14"/><path d="M33 33l9 9"/></svg>
+      <p>未找到匹配的网站</p>
+    </div>
+  </main>
+</div>
+
+<!-- ── MODAL ────────────────────────────────────────── -->
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <h3>添加链接</h3>
+    <div class="form-row">
+      <label>网站名称 *</label>
+      <input type="text" id="f-name" placeholder="如：百度营销" />
+    </div>
+    <div class="form-row">
+      <label>网址 *</label>
+      <input type="url" id="f-url" placeholder="https://..." />
+    </div>
+    <div class="form-row">
+      <label>分类</label>
+      <select id="f-cat"></select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" id="modal-cancel">取消</button>
+      <button class="btn-save" id="modal-save">保存</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────
+const CATEGORIES = [
+  { id:'internal', label:'骏伯内部',        idx:0 },
+  { id:'docs',     label:'文档相关',        idx:1 },
+  { id:'oem',      label:'媒体 · 厂商',     idx:2 },
+  { id:'top',      label:'媒体 · 头部信息流', idx:3 },
+  { id:'mid',      label:'媒体 · 中小信息流', idx:4 },
+  { id:'ai_cn',    label:'国内AI',          idx:5 },
+  { id:'ai_intl',  label:'国外AI',          idx:6 },
+];
+
+const DEFAULT_LINKS = [
+  // 骏伯内部
+  { id:'1',  cat:'internal', name:'快手集群',     url:'https://admin.xsneng.com/#/dataReportTotal/newDateData/list',   domain:'admin.xsneng.com' },
+  { id:'2',  cat:'internal', name:'综合集群',     url:'https://merged-admin.xsneng.com/#/dataReportTotal/newDateData/list', domain:'merged-admin.xsneng.com' },
+  { id:'3',  cat:'internal', name:'中移集群',     url:'https://cmcc-admin.xsneng.com/#/dataReportTotal/newDateData/list',   domain:'cmcc-admin.xsneng.com' },
+  { id:'4',  cat:'internal', name:'数综平台',     url:'http://dcadmin.jetmobo.com/index.html#/ruleManage',             domain:'dcadmin.jetmobo.com' },
+  { id:'5',  cat:'internal', name:'骏伯OA',       url:'http://oa.jetmobo.com/wui/index.html?v=1591093552740#/main/portal/portal-3-1?menuIds=0,3&menuPathIds=0,3&_key=mpo5ub', domain:'oa.jetmobo.com' },
+  { id:'6',  cat:'internal', name:'北极星数据中台', url:'https://finebi-prod.jetmobo.com/webroot/decision/login',       domain:'finebi-prod.jetmobo.com' },
+  // 文档相关
+  { id:'7',  cat:'docs',     name:'飞书文档',     url:'https://gz-junbo.feishu.cn/drive/home/',                        domain:'feishu.cn' },
+  { id:'8',  cat:'docs',     name:'飞书开放平台', url:'https://open.feishu.cn/app?lang=zh-CN',                         domain:'open.feishu.cn' },
+  { id:'9',  cat:'docs',     name:'钉钉文档',     url:'https://alidocs.dingtalk.com/welcome',                          domain:'alidocs.dingtalk.com' },
+  { id:'10', cat:'docs',     name:'腾讯文档',     url:'https://docs.qq.com/desktop',                                   domain:'docs.qq.com' },
+  // 媒体-厂商
+  { id:'11', cat:'oem',      name:'OPPO',         url:'https://e.oppomobile.com/market/login/index.html?redirect=https%3A%2F%2Fe.oppomobile.com%2Fmarkets%2Fmanage%2FIndexManage', domain:'oppomobile.com' },
+  { id:'12', cat:'oem',      name:'vivo',         url:'https://adagent.vivo.com.cn/login/loginIndex',                  domain:'vivo.com.cn' },
+  { id:'13', cat:'oem',      name:'小米',         url:'https://e.mi.com/#/',                                           domain:'mi.com' },
+  { id:'14', cat:'oem',      name:'荣耀',         url:'http://ads.honor.com/delivery/index.html',                      domain:'honor.com' },
+  { id:'15', cat:'oem',      name:'华为',         url:'https://oauth-login.cloud.huawei.com/oauth2/v2/authorize?access_type=offline&response_type=code&client_id=101476933&redirect_uri=https%3A%2F%2Fads.huawei.com%2Fusermgtportal%2Fhtml%2Flogin.html&scope=https%3A%2F%2Fwww.huawei.com%2Fauth%2Faccount%2Fbase.profile+https%3a%2f%2fwww.huawei.com%2fauth%2faccount%2faccountlist+https%3A%2F%2Fwww.huawei.com%2Fauth%2Faccount%2Fcountry+https%3A%2F%2Fwww.huawei.com%2Fauth%2Faccount%2Faccount.flags&lang=zh-CN', domain:'huawei.com' },
+  // 媒体-头部信息流
+  { id:'16', cat:'top',      name:'百度营销',     url:'https://cas.baidu.com/?tpl=www2&fromu=https%3A%2F%2Fwww2.baidu.com%2Fcommon%2Fappinit.ajax', domain:'baidu.com' },
+  { id:'17', cat:'top',      name:'腾讯广告',     url:'https://e.qq.com/ads',                                          domain:'e.qq.com' },
+  { id:'18', cat:'top',      name:'巨量广告',     url:'https://ad.oceanengine.com/pages/login/index.html',             domain:'ad.oceanengine.com' },
+  { id:'19', cat:'top',      name:'巨量星图',     url:'https://www.xingtu.cn/?redirect_uri=/ad/creator/user/task/management', domain:'xingtu.cn' },
+  { id:'20', cat:'top',      name:'快手磁力智投', url:'https://ad.e.kuaishou.com/monitor',                             domain:'kuaishou.com' },
+  { id:'21', cat:'top',      name:'快手聚星',     url:'https://k.kuaishou.com/official.html#/',                        domain:'kuaishou.com' },
+  // 媒体-中小信息流
+  { id:'22', cat:'mid',      name:'趣头条',       url:'https://adv.aiclk.com/#/index/login',                           domain:'qutoutiao.net' },
+  { id:'23', cat:'mid',      name:'WIFI万能钥匙', url:'https://ad.aiyituo.com/v3/fe/user/login',                       domain:'wifi.com' },
+  { id:'24', cat:'mid',      name:'爱奇艺',       url:'https://tuiguang.iqiyi.com/platform/portal?tag=1',              domain:'iqiyi.com' },
+  // 国内AI
+  { id:'25', cat:'ai_cn',    name:'豆包',         url:'https://www.doubao.com/chat/',                                  domain:'doubao.com' },
+  { id:'26', cat:'ai_cn',    name:'DeepSeek',     url:'https://chat.deepseek.com/',                                    domain:'deepseek.com' },
+  { id:'27', cat:'ai_cn',    name:'Kimi',         url:'https://www.kimi.com/',                                         domain:'kimi.com' },
+  { id:'28', cat:'ai_cn',    name:'腾讯元宝',     url:'https://yuanbao.tencent.com/chat/naQivTmsDa',                   domain:'yuanbao.tencent.com' },
+  { id:'29', cat:'ai_cn',    name:'阿里千问',     url:'https://www.qianwen.com/',                                      domain:'qianwen.com' },
+  { id:'30', cat:'ai_cn',    name:'智谱清言',     url:'https://chatglm.cn/main/alltoolsdetail?lang=zh',                domain:'chatglm.cn' },
+  // 国外AI
+  { id:'31', cat:'ai_intl',  name:'ChatGPT',      url:'https://chatgpt.com/',                                          domain:'chatgpt.com' },
+  { id:'32', cat:'ai_intl',  name:'NotebookLM',   url:'https://notebooklm.google.com/',                                domain:'notebooklm.google.com' },
+  { id:'33', cat:'ai_intl',  name:'Gemini',       url:'https://gemini.google.com/app',                                 domain:'gemini.google.com' },
+  { id:'34', cat:'ai_intl',  name:'Claude',       url:'https://claude.com/product/claude-code',                        domain:'claude.com' },
+];
+
+// ── BRAND ICONS ───────────────────────────────────────────────────────
+// Returns HTML string for the icon element inside .card-icon-wrap
+const BRAND_ICONS = {
+  // 飞书
+  'feishu.cn': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#3370FF"/><path d="M24 10c-7.7 0-14 6.3-14 14 0 5.2 2.8 9.7 7 12.1L24 38l7-1.9c4.2-2.4 7-6.9 7-12.1 0-7.7-6.3-14-14-14z" fill="white" opacity=".15"/><path d="M17 22l5 5 9-9" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+  },
+  'open.feishu.cn': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#3370FF"/><path d="M14 16h20v3H14zm0 7h14v3H14zm0 7h17v3H14z" fill="white"/></svg>`
+  },
+  // 钉钉主 app（保留备用）
+  'dingtalk.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#1677FF"/><path d="M30 20.5c0 0-2.5 1-4.5 1.5 1-2 1.5-4.5 1.5-4.5s-3 1-5 3.5c-1.5 1.8-1.5 4-1 5.5 2-1.5 5.5-2 8-2.5-.5 1-2 3.5-4 5h2c2.5-1.5 4.5-5 3-8.5z" fill="white"/></svg>`
+  },
+  // 钉钉文档 alidocs — 橙色文档图标
+  'alidocs.dingtalk.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#FF6A00"/><path d="M15 12h13l7 7v17a2 2 0 0 1-2 2H15a2 2 0 0 1-2-2V14a2 2 0 0 1 2-2z" fill="white" opacity=".95"/><path d="M28 12v7h7" fill="none" stroke="#FF6A00" stroke-width="1.5"/><path d="M19 25h10M19 29h7" stroke="#FF6A00" stroke-width="1.5" stroke-linecap="round"/></svg>`
+  },
+  // 腾讯文档 — 蓝色文档图标
+  'docs.qq.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#0052D9"/><path d="M15 12h13l7 7v17a2 2 0 0 1-2 2H15a2 2 0 0 1-2-2V14a2 2 0 0 1 2-2z" fill="white" opacity=".95"/><path d="M28 12v7h7" fill="none" stroke="#0052D9" stroke-width="1.5"/><path d="M19 25h10M19 29h7" stroke="#0052D9" stroke-width="1.5" stroke-linecap="round"/></svg>`
+  },
+  'e.qq.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#1677FF"/><path d="M24 12c-6.6 0-12 4.9-12 11 0 3.8 2 7.1 5 9.1L15 35h4l-1-2.8c2 .5 4 .8 6 .8s4-.3 6-.8L29 35h4l-2-2.9c3-2 5-5.3 5-9.1 0-6.1-5.4-11-12-11z" fill="white"/></svg>`
+  },
+  // 百度
+  'baidu.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#2932E1"/><text x="24" y="30" text-anchor="middle" font-size="20" font-weight="900" font-family="Arial" fill="white">B</text></svg>`
+  },
+  // 巨量引擎主域（保留备用）
+  'oceanengine.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#161823"/><path d="M20 14h8v5h5v5h-5v5h5v5h-8v-5h-5v-5h5v-5h-5v-5z" fill="white"/></svg>`
+  },
+  // 巨量广告 ad.oceanengine.com — 橙色品牌色，巨量引擎 E 形标志
+  'ad.oceanengine.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#FF6200"/><path d="M14 14h20v5H19v4h13v4H19v4h15v5H14z" fill="white"/></svg>`
+  },
+  'xingtu.cn': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#161823"/><path d="M24 12l3 7h7l-5.5 4 2 7-6.5-4-6.5 4 2-7L14 19h7z" fill="white"/></svg>`
+  },
+  // 快手
+  'kuaishou.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#FF4906"/><path d="M22 15v10.5L30 21v7l-8-4.5V34h-4V15h4z" fill="white"/></svg>`
+  },
+  // 小米
+  'mi.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#FF6900"/><text x="24" y="30" text-anchor="middle" font-size="14" font-weight="900" font-family="Arial" fill="white">mi</text></svg>`
+  },
+  // OPPO
+  'oppomobile.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#1D1D1D"/><text x="24" y="27" text-anchor="middle" font-size="10" font-weight="700" font-family="Arial" letter-spacing="1" fill="white">OPPO</text></svg>`
+  },
+  // vivo
+  'vivo.com.cn': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#415FFF"/><text x="24" y="28" text-anchor="middle" font-size="12" font-weight="700" font-family="Arial" fill="white">vivo</text></svg>`
+  },
+  // 荣耀
+  'honor.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#CC0000"/><text x="24" y="29" text-anchor="middle" font-size="10" font-weight="700" font-family="Arial" fill="white">HONOR</text></svg>`
+  },
+  // 华为
+  'huawei.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#CF0A2C"/><path d="M24 13 l2.5 5.5 5.5-3-3 5.5 5.5 2.5-5.5 2.5 3 5.5-5.5-3L24 35l-2.5-5.5-5.5 3 3-5.5-5.5-2.5 5.5-2.5-3-5.5 5.5 3z" fill="white"/></svg>`
+  },
+  // 内部系统 - xsneng
+  'admin.xsneng.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#FF4906"/><path d="M14 18h20v3H14zm0 5.5h14v3H14zm0 5.5h20v3H14z" fill="white"/></svg>`
+  },
+  'merged-admin.xsneng.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#6366f1"/><path d="M14 18h20v3H14zm0 5.5h14v3H14zm0 5.5h20v3H14z" fill="white"/></svg>`
+  },
+  'cmcc-admin.xsneng.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#0ea5e9"/><path d="M14 18h20v3H14zm0 5.5h14v3H14zm0 5.5h20v3H14z" fill="white"/></svg>`
+  },
+  'dcadmin.jetmobo.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#7c3aed"/><rect x="13" y="13" width="10" height="10" rx="2" fill="white" opacity=".8"/><rect x="25" y="13" width="10" height="10" rx="2" fill="white" opacity=".5"/><rect x="13" y="25" width="10" height="10" rx="2" fill="white" opacity=".5"/><rect x="25" y="25" width="10" height="10" rx="2" fill="white" opacity=".8"/></svg>`
+  },
+  'oa.jetmobo.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#0f766e"/><path d="M16 16h16v3H16zm0 6h10v3H16zm0 6h13v3H16z" fill="white"/></svg>`
+  },
+  // 爱奇艺
+  'iqiyi.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#00BE06"/><text x="24" y="29" text-anchor="middle" font-size="11" font-weight="700" font-family="Arial" fill="white">iQIYI</text></svg>`
+  },
+  // WIFI万能钥匙
+  'wifi.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#0088FF"/><path d="M24 30a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" fill="white"/><path d="M19 26c1.4-1.3 3-2 5-2s3.6.7 5 2" stroke="white" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M15 22c2.4-2.3 5.4-3.5 9-3.5s6.6 1.2 9 3.5" stroke="white" stroke-width="2" stroke-linecap="round" fill="none" opacity=".6"/></svg>`
+  },
+  // 趣头条
+  'qutoutiao.net': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#FF6E00"/><text x="24" y="30" text-anchor="middle" font-size="20" font-weight="900" font-family="Arial" fill="white">Q</text></svg>`
+  },
+  // 北极星数据中台
+  'finebi-prod.jetmobo.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#1890FF"/><path d="M24 12l2 6h6l-5 4 2 6-5-4-5 4 2-6-5-4h6z" fill="white"/><rect x="14" y="28" width="20" height="8" rx="2" fill="white" opacity=".6"/></svg>`
+  },
+  // 国内AI
+  'doubao.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#4F46E5"/><text x="24" y="30" text-anchor="middle" font-size="16" font-weight="700" font-family="Arial" fill="white">豆</text></svg>`
+  },
+  'deepseek.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#0066FF"/><text x="24" y="30" text-anchor="middle" font-size="16" font-weight="900" font-family="Arial" fill="white">DS</text></svg>`
+  },
+  'kimi.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#000000"/><text x="24" y="30" text-anchor="middle" font-size="14" font-weight="700" font-family="Arial" fill="white">Kimi</text></svg>`
+  },
+  'yuanbao.tencent.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#0052D9"/><text x="24" y="30" text-anchor="middle" font-size="14" font-weight="700" font-family="Arial" fill="white">元宝</text></svg>`
+  },
+  'qianwen.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#6366F1"/><text x="24" y="30" text-anchor="middle" font-size="14" font-weight="700" font-family="Arial" fill="white">千问</text></svg>`
+  },
+  'chatglm.cn': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#3B82F6"/><text x="24" y="30" text-anchor="middle" font-size="12" font-weight="700" font-family="Arial" fill="white">智谱</text></svg>`
+  },
+  // 国外AI
+  'chatgpt.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#10A37F"/><path d="M24 14c-5.5 0-10 4.5-10 10s4.5 10 10 10 10-4.5 10-10-4.5-10-10-10zm0 16c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z" fill="white"/></svg>`
+  },
+  'notebooklm.google.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#EA4335"/><path d="M15 12h13l7 7v17a2 2 0 0 1-2 2H15a2 2 0 0 1-2-2V14a2 2 0 0 1 2-2z" fill="white"/><path d="M28 12v7h7" fill="none" stroke="#EA4335" stroke-width="1.5"/></svg>`
+  },
+  'gemini.google.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#8E75B2"/><path d="M24 12l3 8h8l-6.5 5 2.5 8-7-5-7 5 2.5-8L13 20h8z" fill="white"/></svg>`
+  },
+  'claude.com': {
+    svg: `<svg viewBox="0 0 48 48" fill="none"><rect width="48" height="48" rx="10" fill="#D97757"/><text x="24" y="30" text-anchor="middle" font-size="12" font-weight="700" font-family="Arial" fill="white">Claude</text></svg>`
+  },
+};
+
+// fallback colored initials
+const PALETTE = ['#6366f1','#0ea5e9','#f59e0b','#ef4444','#10b981','#8b5cf6','#ec4899','#0d9488'];
+function brandIcon(link) {
+  const domain = link.domain || extractDomain(link.url);
+  const brand = BRAND_ICONS[domain];
+  if (brand) return brand.svg;
+  // colored initial fallback
+  const color = PALETTE[parseInt(link.id) % PALETTE.length];
+  const initial = link.name.replace(/[^\u4e00-\u9fa5a-zA-Z0-9]/g, '').charAt(0).toUpperCase();
+  return `<span class="card-icon-initial" style="background:${color}">${initial}</span>`;
+}
+
+// ── STATE ─────────────────────────────────────────────────────────────
+// 数据版本号，修改默认数据后需要递增此值以强制更新
+const DATA_VERSION = 2;
+const storedVersion = parseInt(localStorage.getItem('nav_version')) || 1;
+
+// 如果版本号变化，清除旧数据使用新默认值
+if (storedVersion < DATA_VERSION) {
+  localStorage.removeItem('nav_cats2');
+  localStorage.removeItem('nav_links2');
+  localStorage.setItem('nav_version', DATA_VERSION);
+}
+
+let cats  = JSON.parse(localStorage.getItem('nav_cats2'))  || CATEGORIES;
+let links = JSON.parse(localStorage.getItem('nav_links2')) || DEFAULT_LINKS;
+let activeTab = 'all';
+
+function save() {
+  localStorage.setItem('nav_cats2',  JSON.stringify(cats));
+  localStorage.setItem('nav_links2', JSON.stringify(links));
+}
+
+// 官方 favicon 加载失败时换成自制 SVG（img onerror 回调，现已备用）
+function iconFallback(img) {
+  const wrap = img.closest('.card-icon-wrap');
+  if (!wrap) return;
+  const card = wrap.closest('.card');
+  if (!card) return;
+  const id  = card.dataset.id;
+  const lnk = links.find(l => l.id === id);
+  if (!lnk) { img.remove(); return; }
+  wrap.innerHTML = brandIcon(lnk);
+}
+
+// favicon 内存缓存：domain → 'ok' | 'fail'
+const faviconCache = new Map();
+
+// 后台异步加载 favicon，成功后替换 SVG，同域名只请求一次
+function loadFaviconAsync(domain, link, wrap) {
+  const cached = faviconCache.get(domain);
+  if (cached === 'fail') return; // 已知失败，不重试
+  if (cached === 'ok') {
+    // 已知成功，直接写入图片（无需等待网络）
+    swapToFavicon(domain, wrap);
+    return;
+  }
+  // 使用 requestIdleCallback（或 setTimeout）延迟到浏览器空闲时再请求，不阻塞渲染
+  const schedule = window.requestIdleCallback
+    ? cb => requestIdleCallback(cb, { timeout: 4000 })
+    : cb => setTimeout(cb, 100);
+
+  schedule(() => {
+    if (!document.body.contains(wrap)) return; // 卡片已从 DOM 移除
+    const img = new Image();
+    img.onload = () => {
+      faviconCache.set(domain, 'ok');
+      if (document.body.contains(wrap)) swapToFavicon(domain, wrap);
+    };
+    img.onerror = () => faviconCache.set(domain, 'fail');
+    img.src = `https://${domain}/favicon.ico`;
+  });
+}
+
+function swapToFavicon(domain, wrap) {
+  const img = document.createElement('img');
+  img.src = `https://${domain}/favicon.ico`;
+  img.style.cssText = 'width:26px;height:26px;border-radius:4px;object-fit:contain';
+  img.alt = '';
+  wrap.innerHTML = '';
+  wrap.appendChild(img);
+}
+
+// ── RENDER SIDEBAR ────────────────────────────────────────────────────
+function renderSidebar() {
+  const sb = document.getElementById('sidebar');
+  const counts = {};
+  links.forEach(l => { counts[l.cat] = (counts[l.cat]||0)+1; });
+  const total = links.length;
+
+  sb.innerHTML = `<div class="sidebar-title">分类导航</div>`;
+
+  const all = document.createElement('div');
+  all.className = 'nav-item' + (activeTab==='all'?' active':'');
+  all.dataset.cat = 'all';
+  all.innerHTML = `
+    <div class="nav-item-left">
+      <span class="nav-dot cat-all"></span>
+      <span class="nav-label">全部</span>
+    </div>
+    <span class="nav-count">${total}</span>`;
+  sb.appendChild(all);
+
+  const div = document.createElement('div');
+  div.className = 'sidebar-divider';
+  sb.appendChild(div);
+
+  cats.forEach((cat) => {
+    const item = document.createElement('div');
+    item.className = 'nav-item' + (activeTab===cat.id?' active':'');
+    item.dataset.cat = cat.id;
+    item.innerHTML = `
+      <div class="nav-item-left">
+        <span class="nav-dot cat-${cat.idx}"></span>
+        <span class="nav-label">${cat.label}</span>
+      </div>
+      <span class="nav-count">${counts[cat.id]||0}</span>`;
+    sb.appendChild(item);
+  });
+
+  sb.querySelectorAll('.nav-item').forEach(el => {
+    el.addEventListener('click', () => {
+      activeTab = el.dataset.cat;
+      render(document.getElementById('search').value);
+    });
+  });
+}
+
+// ── RENDER MAIN ───────────────────────────────────────────────────────
+function render(query='') {
+  const q = query.toLowerCase().trim();
+  renderSidebar();
+
+  const secEl  = document.getElementById('sections');
+  const noRes  = document.getElementById('no-results');
+
+  const filtered = links.filter(l => {
+    const matchCat = activeTab==='all' || l.cat===activeTab;
+    const matchQ   = !q || l.name.toLowerCase().includes(q) || (l.domain||'').includes(q);
+    return matchCat && matchQ;
+  });
+
+  if (!filtered.length) {
+    secEl.innerHTML = '';
+    noRes.classList.add('show');
+    return;
+  }
+  noRes.classList.remove('show');
+
+  // group
+  const groups = {};
+  filtered.forEach(l => { (groups[l.cat]||(groups[l.cat]=[])).push(l); });
+
+  const orderedCats = activeTab==='all'
+    ? cats.filter(c => groups[c.id])
+    : cats.filter(c => c.id===activeTab && groups[c.id]);
+
+  secEl.innerHTML = '';
+  orderedCats.forEach(cat => {
+    const sec = document.createElement('div');
+    sec.className = 'section';
+    sec.innerHTML = `
+      <div class="section-header">
+        <span class="section-badge badge-${cat.idx}">
+          <span class="section-badge-dot"></span>${cat.label}
+        </span>
+        <span class="section-count">${groups[cat.id].length} 个站点</span>
+      </div>
+      <div class="cards" id="cards-${cat.id}"></div>`;
+    secEl.appendChild(sec);
+
+    const cardsEl = sec.querySelector('.cards');
+    groups[cat.id].forEach(link => cardsEl.appendChild(makeCard(link, cat)));
+
+    const addBtn = document.createElement('button');
+    addBtn.className = 'card-add';
+    addBtn.dataset.cat = cat.id;
+    addBtn.innerHTML = `<svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v10M3 8h10"/></svg> 添加链接`;
+    addBtn.addEventListener('click', () => openModal(cat.id));
+    cardsEl.appendChild(addBtn);
+  });
+}
+
+function makeCard(link, cat) {
+  const a = document.createElement('a');
+  a.className = 'card';
+  a.href = link.url;
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  a.dataset.id = link.id;
+
+  const domain = link.domain || extractDomain(link.url);
+  // 立即显示自制 SVG，后台异步加载官方 favicon，成功后无缝替换
+  a.innerHTML = `
+    <div class="card-icon-wrap" data-id="${link.id}">
+      ${brandIcon(link)}
+    </div>
+    <div class="card-info">
+      <div class="card-name">${esc(link.name)}</div>
+      <div class="card-domain">${domain}</div>
+    </div>
+    <span class="card-arrow">
+      <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.5 9.5l7-7M4 2.5h5.5V8"/></svg>
+    </span>
+    <button class="card-del" title="删除">✕</button>`;
+
+  a.querySelector('.card-del').addEventListener('click', e => {
+    e.preventDefault(); e.stopPropagation();
+    if (confirm(`确认删除 "${link.name}"？`)) {
+      links = links.filter(l => l.id !== link.id);
+      save(); render(document.getElementById('search').value);
+    }
+  });
+  a.addEventListener('click', e => {
+    if (document.body.classList.contains('edit-mode')) e.preventDefault();
+  });
+
+  // 后台异步加载官方 favicon，加载完毕后无缝替换 SVG
+  loadFaviconAsync(domain, link, a.querySelector('.card-icon-wrap'));
+
+  return a;
+}
+
+function extractDomain(url) {
+  try { return new URL(url).hostname; } catch { return url; }
+}
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── MODAL ─────────────────────────────────────────────────────────────
+function openModal(catId) {
+  document.getElementById('f-name').value = '';
+  document.getElementById('f-url').value  = '';
+  const sel = document.getElementById('f-cat');
+  sel.innerHTML = cats.map(c =>
+    `<option value="${c.id}" ${c.id===catId?'selected':''}>${c.label}</option>`
+  ).join('');
+  document.getElementById('modal-bg').classList.add('open');
+  document.getElementById('f-name').focus();
+}
+function closeModal() {
+  document.getElementById('modal-bg').classList.remove('open');
+}
+document.getElementById('modal-cancel').addEventListener('click', closeModal);
+document.getElementById('modal-bg').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-bg')) closeModal();
+});
+document.getElementById('modal-save').addEventListener('click', () => {
+  const name = document.getElementById('f-name').value.trim();
+  const url  = document.getElementById('f-url').value.trim();
+  if (!name || !url) { alert('名称和网址为必填项'); return; }
+  links.push({
+    id: Date.now().toString(),
+    name, url,
+    cat:    document.getElementById('f-cat').value,
+    domain: extractDomain(url),
+  });
+  save(); closeModal(); render(document.getElementById('search').value);
+});
+
+// ── EDIT MODE ─────────────────────────────────────────────────────────
+document.getElementById('btn-edit').addEventListener('click', () => {
+  document.body.classList.toggle('edit-mode');
+  const btn = document.getElementById('btn-edit');
+  const on  = document.body.classList.contains('edit-mode');
+  btn.innerHTML = on
+    ? `<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8l4 4 6-7"/></svg> 完成`
+    : `<svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11.5 2.5l2 2-8 8H3.5v-2l8-8z"/></svg> 编辑`;
+  btn.classList.toggle('active', on);
+});
+
+// ── SEARCH ────────────────────────────────────────────────────────────
+document.getElementById('search').addEventListener('input', e => {
+  render(e.target.value);
+});
+
+// ── CLOCK ─────────────────────────────────────────────────────────────
+function tick() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const days = ['周日','周一','周二','周三','周四','周五','周六'];
+  document.getElementById('clock').textContent =
+    `${h}:${m}  ·  ${now.getMonth()+1}月${now.getDate()}日 ${days[now.getDay()]}`;
+}
+tick(); setInterval(tick, 10000);
+
+// ── INIT ──────────────────────────────────────────────────────────────
+render();
+</script>
+</body>
+</html>
