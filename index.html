@@ -625,7 +625,7 @@
 <!-- ── MODAL ────────────────────────────────────────── -->
 <div class="modal-bg" id="modal-bg">
   <div class="modal">
-    <h3>添加链接</h3>
+    <h3 id="modal-title">添加链接</h3>
     <div class="form-row">
       <label>网站名称 *</label>
       <input type="text" id="f-name" placeholder="如：百度营销" />
@@ -858,6 +858,7 @@ if (storedVersion < DATA_VERSION) {
 let cats  = JSON.parse(localStorage.getItem('nav_cats2'))  || CATEGORIES;
 let links = JSON.parse(localStorage.getItem('nav_links2')) || DEFAULT_LINKS;
 let activeTab = 'all';
+let editingLinkId = null;
 
 function save() {
   localStorage.setItem('nav_cats2',  JSON.stringify(cats));
@@ -1045,7 +1046,9 @@ function makeCard(link, cat) {
     }
   });
   a.addEventListener('click', e => {
-    if (document.body.classList.contains('edit-mode')) e.preventDefault();
+    if (!document.body.classList.contains('edit-mode')) return;
+    e.preventDefault();
+    openModal(link.cat, link);
   });
 
   // 后台异步加载官方 favicon，加载完毕后无缝替换 SVG
@@ -1062,18 +1065,21 @@ function esc(s) {
 }
 
 // ── MODAL ─────────────────────────────────────────────────────────────
-function openModal(catId) {
-  document.getElementById('f-name').value = '';
-  document.getElementById('f-url').value  = '';
+function openModal(catId, link=null) {
+  editingLinkId = link ? link.id : null;
+  document.getElementById('modal-title').textContent = link ? '编辑链接' : '添加链接';
+  document.getElementById('f-name').value = link ? link.name : '';
+  document.getElementById('f-url').value  = link ? link.url : '';
   const sel = document.getElementById('f-cat');
   sel.innerHTML = cats.map(c =>
-    `<option value="${c.id}" ${c.id===catId?'selected':''}>${c.label}</option>`
+    `<option value="${c.id}" ${c.id===(link ? link.cat : catId)?'selected':''}>${c.label}</option>`
   ).join('');
   document.getElementById('modal-bg').classList.add('open');
   document.getElementById('f-name').focus();
 }
 function closeModal() {
   document.getElementById('modal-bg').classList.remove('open');
+  editingLinkId = null;
 }
 document.getElementById('modal-cancel').addEventListener('click', closeModal);
 document.getElementById('modal-bg').addEventListener('click', e => {
@@ -1083,12 +1089,21 @@ document.getElementById('modal-save').addEventListener('click', () => {
   const name = document.getElementById('f-name').value.trim();
   const url  = document.getElementById('f-url').value.trim();
   if (!name || !url) { alert('名称和网址为必填项'); return; }
-  links.push({
-    id: Date.now().toString(),
+  const nextLink = {
     name, url,
     cat:    document.getElementById('f-cat').value,
     domain: extractDomain(url),
-  });
+  };
+  if (editingLinkId) {
+    links = links.map(link =>
+      link.id === editingLinkId ? { ...link, ...nextLink } : link
+    );
+  } else {
+    links.push({
+      id: Date.now().toString(),
+      ...nextLink,
+    });
+  }
   save(); closeModal(); render(document.getElementById('search').value);
 });
 
